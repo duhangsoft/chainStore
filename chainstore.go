@@ -4,13 +4,14 @@ import (
 	"net/http"
 )
 
-func NewChainStoreServe(mux *http.ServeMux) {
-
-	mux.HandleFunc("/init", safeHander(initHandler))
-	mux.HandleFunc("/index", safeHander(indexHandler))
-	mux.HandleFunc("/login", safeHander(loginHandler))
-	logger.Debugln("a")
-	return
+func Run(url string) {
+	mux := http.NewServeMux()
+	mux.HandleFunc("/", safeHander(chainHandler))
+	err := http.ListenAndServe(url, mux)
+	if err != nil {
+		logger.Errorln(err)
+		return
+	}
 }
 func safeHander(fn http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -22,12 +23,16 @@ func safeHander(fn http.HandlerFunc) http.HandlerFunc {
 		fn(w, r)
 	}
 }
-func initHandler(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("init"))
-}
-func indexHandler(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("index"))
-}
-func loginHandler(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("login"))
+func chainHandler(w http.ResponseWriter, r *http.Request) {
+	//do something
+	conf := newConfig()
+
+	switch conf.read() {
+	case CONFIGERROR:
+		w.Write(errorPage())
+	case FIRST:
+		w.Write(initPage())
+	default:
+		w.Write([]byte("error"))
+	}
 }

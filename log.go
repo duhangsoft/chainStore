@@ -1,7 +1,7 @@
 package chainStore
 
 import (
-	"duhangsoft/chainStore/log"
+	"duhangsoft/locallog"
 )
 
-var logger *log.Logger = log.New("chainStore")
+var logger = locallog.New("chainStore")
