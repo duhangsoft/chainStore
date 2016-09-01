@@ -5,7 +5,7 @@ import (
 )
 
 func initPage() []byte {
-	f, err := os.Open("../views/init.html")
+	f, err := os.Open("./views/init.html")
 	if err != nil {
 		return errorPage()
 	}

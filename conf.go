@@ -1,6 +1,7 @@
 package chainStore
 
 import (
+	"database/sql"
 	"encoding/json"
 	"os"
 )
@@ -21,6 +22,7 @@ type config struct {
 	dbPort int32  `json:dbPort`
 	amin   string `json:"admin"`
 	pwd    string `json:"pwd"`
+	db     *sql.DB
 }
 
 func newConfig() *config {
@@ -54,6 +56,10 @@ func (c *config) read() int {
 	}
 	if c.dbName == "" {
 		return DATEBASE
+	}
+	err = c.db.Ping()
+	if err != nil {
+		c.db, err = sql.Open("mysql", c.dbUser+":"+c.dbPwd+"@/"+c.dbName+"?charset=utf8")
 	}
 	return CONFIGOK
 }

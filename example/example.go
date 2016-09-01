@@ -5,5 +5,5 @@ import (
 )
 
 func main() {
-	chainStore.Run(":9990")
+	chainStore.Run("9990", "9999")
 }
